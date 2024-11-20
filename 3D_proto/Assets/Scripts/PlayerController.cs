@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private KeyCode jumpKey;
+    //[SerializeField] private LayerMask coinMask;
+    //[SerializeField] private Score playerScore;
 
     private Rigidbody _rb;
     void Awake()
@@ -23,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
         Move(moveForward);
         Rotate(rotate);
-        if (Input.GetKey(jumpKey))
+        if (Input.GetKeyDown(jumpKey))
         {
             Jump();
         }
@@ -34,7 +36,10 @@ public class PlayerController : MonoBehaviour
     {
         //_rb.velocity = new Vector3(0, _rb.velocity.y, value * moveSpeed);
 
-        _rb.velocity = transform.forward * moveSpeed * value;   
+        Vector3 direction = transform.forward * moveSpeed * value;
+        Vector3 combinedDirection = new Vector3(direction.x, _rb.velocity.y, direction.z);
+
+        _rb.velocity = combinedDirection;   
     }
 
     private void Jump()
@@ -46,4 +51,16 @@ public class PlayerController : MonoBehaviour
     {
         transform.Rotate(Vector3.up, value * rotationSpeed * Time.deltaTime);
     }
+
+    /*private void OnTriggerEnter(Collider other)
+    {
+        if (LayerMaskUtil.ContainsLayer(coinMask, other.gameObject.layer))
+        {
+            if (other.TryGetComponent(out Coin coin))
+            {
+                playerScore.AddScore(coin.price);
+                other.gameObject.SetActive(false);
+            }
+        }
+    }*/
 }
